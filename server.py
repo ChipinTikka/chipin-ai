@@ -27,7 +27,7 @@ def index():
             }
 
             predictions = requests.post(ollama_url, headers=headers, data=json.dumps(data))
-            return render_template("index.html", predictions=predictions)
+            return render_template("index.html", predictions=predictions["response"])
     return render_template('index.html', predictions=None)
 
 if __name__ == "__main__":

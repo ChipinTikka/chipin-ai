@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from flask_cors import CORS  # Import CORS
 from vision import get_predictions
 import requests
+import json
 
 
 app = Flask(__name__)

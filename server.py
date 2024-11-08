@@ -20,7 +20,7 @@ def index():
             predictions = get_predictions(file_image)
             data = {
                 "model": "llama3.2",
-                "prompt": "I am providing you with a json containing receipt OCR data, format it properly into item price quantity. add tax as an item as well: "+string(predictions),
+                "prompt": "I am providing you with a json containing receipt OCR data, format it properly into item price quantity. add tax as an item as well: "+ str(predictions),
                 "format": "json",
                 "stream": False
             }

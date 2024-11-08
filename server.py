@@ -1,12 +1,11 @@
 from flask import Flask, render_template, request
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 from vision import get_predictions
 import requests
 import json
 
-
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
 ollama_url = "http://localhost:11434/api/generate"
 headers = {"Content-Type": "application/json"}
@@ -26,8 +25,16 @@ def index():
                 "stream": False
             }
 
-            predictions = requests.post(ollama_url, headers=headers, data=json.dumps(data))
-            return render_template("index.html", predictions=predictions["response"])
+            # Send request to Ollama API
+            response = requests.post(ollama_url, headers=headers, data=json.dumps(data))
+
+            if response.status_code == 200:
+                result = response.json()
+                predictions = result.get("response", "No response from Ollama model")
+            else:
+                predictions = f"Error: {response.status_code} - {response.text}"
+
+            return render_template("index.html", predictions=predictions)
     return render_template('index.html', predictions=None)
 
 if __name__ == "__main__":

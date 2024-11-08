@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request
 from flask_cors import CORS  # Import CORS
 from vision import get_predictions
+import requests
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+ollama_url = "http://localhost:11434/api/generate"
+headers = {"Content-Type": "application/json"}
 
 @app.route('/', methods=['GET', 'POST'])
 def index(): 
@@ -13,6 +18,14 @@ def index():
         file_image = request.files['image']
         if file_image:
             predictions = get_predictions(file_image)
+            data = {
+                "model": "llama3.2",
+                "prompt": "I am providing you with a json containing receipt OCR data, format it properly into item price quantity. add tax as an item as well: "+string(predictions),
+                "format": "json",
+                "stream": False
+            }
+
+            predictions = requests.post(ollama_url, headers=headers, data=json.dumps(data))
             return render_template("index.html", predictions=predictions)
     return render_template('index.html', predictions=None)
 
